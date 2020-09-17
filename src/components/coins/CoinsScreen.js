@@ -31,7 +31,7 @@ const CoinsScreen = (props) => {
       }
     };
     consultar();
-    console.log(arraycoins);
+    // console.log(arraycoins);
     // return () => {
     //   cleanup;
     // };
