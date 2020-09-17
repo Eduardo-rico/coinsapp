@@ -12,7 +12,7 @@ const CoinItem = ({item}) => {
 
       <View style={styles.row}>
         <Text style={styles.percentText}>{item.percent_change_1h}</Text>
-        <Image source={} />
+        {/* <Image source={} /> */}
       </View>
     </View>
   );
