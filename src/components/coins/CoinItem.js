@@ -1,9 +1,18 @@
 import React from 'react';
-import {StyleSheet, Text, View, Image} from 'react-native';
+import {StyleSheet, Text, View, Image, Platform, Pressable} from 'react-native';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
 
-const CoinItem = ({item}) => {
+const CoinItem = ({item, onPress}) => {
+  const getImgArrow = () => {
+    if (item.percent_change_1h > 0) {
+      return require('../../assets/arrow_up.png');
+    } else {
+      return require('../../assets/arrow_down.png');
+    }
+  };
+
   return (
-    <View style={styles.container}>
+    <Pressable onPress={onPress} style={styles.container}>
       <View style={styles.row}>
         <Text style={styles.symbolText}>{item.symbol}</Text>
         <Text style={styles.nameText}>{item.name}</Text>
@@ -12,15 +21,19 @@ const CoinItem = ({item}) => {
 
       <View style={styles.row}>
         <Text style={styles.percentText}>{item.percent_change_1h}</Text>
-        {/* <Image source={} /> */}
+        <Image style={styles.imageIcon} source={getImgArrow()} />
       </View>
-    </View>
+    </Pressable>
   );
 };
 
 export default CoinItem;
 
 const styles = StyleSheet.create({
+  imageIcon: {
+    width: 22,
+    height: 22,
+  },
   priceText: {
     color: 'white',
     fontSize: 14,
@@ -30,6 +43,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     padding: 16,
     justifyContent: 'space-between',
+    borderBottomColor: Colors.zircon,
+    borderBottomWidth: 1,
+    marginLeft: Platform.OS == 'ios' ? 16 : 0,
+    paddingLeft: Platform.OS == 'ios' ? 0 : 16,
   },
   row: {
     flexDirection: 'row',
@@ -48,5 +65,6 @@ const styles = StyleSheet.create({
   percentText: {
     color: 'white',
     fontSize: 12,
+    marginRight: 8,
   },
 });

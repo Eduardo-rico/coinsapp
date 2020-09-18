@@ -11,9 +11,11 @@ import {
 import Http from '../../lib/http';
 import CoinItem from './CoinItem';
 import Colors from '../../res/colors';
+import CoinsSearch from './CoinsSearch';
 
 const CoinsScreen = (props) => {
   const [arraycoins, guardarArrayCoins] = useState([]);
+  const [busqueda, guardarBusqueda] = useState(null);
   const [loading, guardarLoading] = useState(true);
 
   useEffect(() => {
@@ -23,35 +25,62 @@ const CoinsScreen = (props) => {
           'http://api.coinlore.net/api/tickers/',
         );
         guardarArrayCoins(coins.data);
-        if (coins) {
+        if (arraycoins) {
           guardarLoading(false);
         }
       } catch (error) {
         console.log(error);
       }
     };
+
     consultar();
+
     // console.log(arraycoins);
     // return () => {
     //   cleanup;
     // };
   }, [loading]);
 
-  const handlePress = () => {
+  const buscar = (query) => {
+    const coinsFilter = arraycoins.filter((coin) => {
+      return (
+        coin.name.toLowerCase().includes(query.toLowerCase()) ||
+        coin.symbol.toLowerCase().includes(query.toLowerCase())
+      );
+    });
+    guardarBusqueda(coinsFilter);
+  };
+
+  const handlePress = (coin) => {
     console.log('go to detail', props);
-    props.navigation.navigate('CoinDetail');
+    props.navigation.navigate('CoinDetail', {coin});
   };
 
   return (
     <View style={styles.container}>
       {loading ? (
         <ActivityIndicator color="blue" size="large" style={styles.loader} />
-      ) : null}
+      ) : (
+        <>
+          <CoinsSearch buscar={buscar} />
 
-      <FlatList
-        data={arraycoins}
-        renderItem={({item}) => <CoinItem item={item} />}
-      />
+          {busqueda ? (
+            <FlatList
+              data={busqueda}
+              renderItem={({item}) => (
+                <CoinItem item={item} onPress={() => handlePress(item)} />
+              )}
+            />
+          ) : (
+            <FlatList
+              data={arraycoins}
+              renderItem={({item}) => (
+                <CoinItem item={item} onPress={() => handlePress(item)} />
+              )}
+            />
+          )}
+        </>
+      )}
     </View>
   );
 };
